@@ -1,11 +1,9 @@
-# .github/workflows/ml-ci.yml
-
 name: ML CI Pipeline
 
 on:
   push:
     branches:
-      - main  # When code is pushed to main branch
+      - main
 
 jobs:
   build-test:
@@ -27,3 +25,13 @@ jobs:
     - name: Run tests
       run: |
         pytest test_model.py
+
+    - name: Train model with commit ID
+      run: |
+        python train.py ${{ github.sha }}
+
+    - name: Upload trained model artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: trained-model
+        path: model_*.joblib
